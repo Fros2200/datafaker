@@ -14,6 +14,8 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.allOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author pmiklos
@@ -144,6 +146,22 @@ class RandomServiceTest extends AbstractFakerTest {
     void testDefaultHex(RandomService randomService) {
         assertThat(randomService.hex()).matches("^[0-9A-F]{8}$");
     }
+       @Test
+    public void testSameObject(){ 
+
+        Random random = new Random();
+        RandomService service1 = new RandomService(random);
+        RandomService service2 = new RandomService(random);
+        assertTrue(service1.equals(service2));
+    }
+    @Test
+    public void notRandomServiceObject(){ 
+
+        Random random = new Random();
+        RandomService service = new RandomService(random);
+        String test = "Not RandomService"; 
+        assertFalse(service.equals(test));
+    } 
 
     private static Stream<Arguments> randomServiceProvider() {
         return Stream.of(

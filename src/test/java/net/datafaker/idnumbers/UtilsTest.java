@@ -1,11 +1,17 @@
 package net.datafaker.idnumbers;
-
+import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.Test;
+
+import net.datafaker.providers.base.BaseProviders;
+import net.datafaker.providers.base.Bool;
+import net.datafaker.providers.base.IdNumber;
+import net.datafaker.providers.base.IdNumber.IdNumberRequest;
 
 import static net.datafaker.idnumbers.Utils.digit;
 import static net.datafaker.idnumbers.Utils.digitAt;
 import static net.datafaker.idnumbers.Utils.multiply;
 import static org.assertj.core.api.Assertions.assertThat;
+import net.datafaker.providers.base.PersonIdNumber.Gender;
 
 class UtilsTest {
     @Test
@@ -32,4 +38,46 @@ class UtilsTest {
         assertThat(multiply("1", new int[]{2})).isEqualTo(2);
         assertThat(multiply("23", new int[]{4, 5})).isEqualTo(2 * 4 + 3 * 5);
     }
+    @Test
+    void testGenderReturnsFemale() {
+      
+        BaseProviders mockFaker = mock(BaseProviders.class);
+      
+        IdNumberRequest mockRequest = mock(IdNumberRequest.class);
+        when(mockRequest.gender()).thenReturn(IdNumber.GenderRequest.FEMALE);
+        
+        Gender gender = Utils.gender(mockFaker, mockRequest);
+        assertThat(gender).isEqualTo(Gender.FEMALE); // Kontrollerar att det blir FEMALE
+    }
+    @Test
+    void testGenderReturnsMale() {
+       
+        BaseProviders mockFaker = mock(BaseProviders.class);
+    
+        IdNumberRequest mockRequest = mock(IdNumberRequest.class);
+        when(mockRequest.gender()).thenReturn(IdNumber.GenderRequest.MALE);
+    
+        Gender gender = Utils.gender(mockFaker, mockRequest);
+        assertThat(gender).isEqualTo(Gender.MALE); // Kontrollerar att det blir FEMALE
+    }
+    @Test
+        void testGenderReturnsRandomForAny() {
+        
+            BaseProviders mockFaker = mock(BaseProviders.class);
+            Bool mockBool = mock(Bool.class);
+            when(mockFaker.bool()).thenReturn(mockBool);
+
+            
+            when(mockBool.bool()).thenReturn(true);
+            IdNumberRequest mockRequest = mock(IdNumberRequest.class);
+            when(mockRequest.gender()).thenReturn(IdNumber.GenderRequest.ANY);
+            
+            Gender gender = Utils.gender(mockFaker, mockRequest);
+            assertThat(gender).isEqualTo(Gender.FEMALE);
+
+           
+            when(mockBool.bool()).thenReturn(false);
+            gender = Utils.gender(mockFaker, mockRequest);
+            assertThat(gender).isEqualTo(Gender.MALE);
+}
 }

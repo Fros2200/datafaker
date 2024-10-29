@@ -13,6 +13,8 @@ import java.util.Locale;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.params.provider.Arguments.of;
 
 class FakeValuesTest {
@@ -132,4 +134,39 @@ class FakeValuesTest {
             of(FakeValues.of(FakeValuesContext.of(Locale.ENGLISH, "filepath", "path", Paths.get("tmp2").toUri().toURL())), FakeValues.of(FakeValuesContext.of(Locale.ENGLISH, "filepath", "path", tmp.toUri().toURL())), false)
         );
     }
+      //#region Mina test
+    @Test
+    public void testEqualsWithCorrectObject  () {
+        FakerContext fakerContext = new FakerContext(new Locale("en", "US"), new RandomService());
+        assertTrue(fakerContext.equals(fakerContext));
+    }
+
+    @Test
+    public void testEqualsWithNullObject() {
+        FakerContext fakerContext = new FakerContext(new Locale("en", "US"), new RandomService());
+         assertFalse(fakerContext.equals(null));
+    }
+
+    @Test
+    public void testEqualsWithObjectOfDifferentClass() {
+        FakerContext fakerContext = new FakerContext(new Locale("en", "US"), new RandomService());
+        Object differentClassObject = new Object(); // creates a generic object 
+        assertFalse(fakerContext.equals(differentClassObject));
+    }
+
+    @Test
+    public void testEqualsWithTwoObjectsOfSameClass() {
+        FakerContext fakerContextA = new FakerContext(new Locale("en", "US"), new RandomService());
+        FakerContext fakerContextB = new FakerContext(new Locale("en", "US"), new RandomService());
+        assertTrue(fakerContextA.equals(fakerContextB)); 
+    }   
+
+    @Test
+    public void testEqualsWithSameClassDifferentLocale() {
+        FakerContext fakerContextA = new FakerContext(new Locale("en", "US"), new RandomService());
+        FakerContext fakerContextB = new FakerContext(new Locale("fr", "FR"), new RandomService());
+        assertFalse(fakerContextA.equals(fakerContextB)); // same class, different locale = properties
+    }
+ 
+    //#endregion
 }

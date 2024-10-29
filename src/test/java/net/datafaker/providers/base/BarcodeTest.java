@@ -89,4 +89,5 @@ class BarcodeTest extends BaseFakerTest<BaseFaker> {
 
         assertThat(String.valueOf(sum)).endsWith("0");
     }
+    
 }

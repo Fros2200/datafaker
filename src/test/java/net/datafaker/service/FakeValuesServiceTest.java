@@ -33,6 +33,7 @@ import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -368,7 +369,53 @@ class FakeValuesServiceTest extends AbstractFakerTest {
         // then
         assertThat(actual).isEqualTo("1 2");
     }
+        @Test
+    void fetchOneElement(){ 
 
+        List<String> mockList = List.of("x"); 
+         when(fakeValuesService.fetchObject("property.dummy", mockedFaker.getContext()))
+        .thenReturn(mockList);
+            // Act 
+          Object result = fakeValuesService.fetch("property.dummy", mockedFaker.getContext()); 
+          // Assert 
+          assertThat(result).isEqualTo("x"); 
+        }
+    @Test
+    public void stringIsEmpty(){ 
+        // Arrange
+        RandomService service = new RandomService(); 
+        FakeValuesService vService = new FakeValuesService();
+        Locale locale = new Locale("en");  
+        FakerContext context = new FakerContext(locale, service);  
+        // Act 
+
+        String result = vService.examplify(null, context); 
+        // Assert 
+        assertNull(result); 
+    }
+    @Test
+    void fetchZeroElement(){ 
+
+        List<String> mockList = List.of(); 
+         when(fakeValuesService.fetchObject("property.dummy", mockedFaker.getContext())) 
+        .thenReturn(mockList); 
+            // Act 
+
+          Object result = fakeValuesService.fetch("property.dummy", mockedFaker.getContext());
+          // Assert 
+          assertThat(result).isEqualTo(null);
+        } 
+    @Test 
+    void fetchNotAList(){ 
+        String mockList = "x"; 
+        when(fakeValuesService.fetchObject("property.dummy", mockedFaker.getContext())) 
+        .thenReturn(mockList); 
+
+          // Act 
+           Object result = fakeValuesService.fetch("property.dummy", mockedFaker.getContext()); 
+           // Assert 
+           assertThat(result).isEqualTo(null); 
+        }
     public static class DummyService {
         public String firstName() {
             return "John";
